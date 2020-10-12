@@ -59,7 +59,7 @@ We use a word as a token, and then create a dictionary based on the training dat
 train_tokens = d2l.tokenize(train_data[0], token='word')
 vocab = d2l.Vocab(train_tokens, min_freq=5, reserved_tokens=['<pad>'])
 
-d2l.set_figsize((3.5, 2.5))
+d2l.set_figsize()
 d2l.plt.hist([len(line) for line in train_tokens], bins=range(0, 1000, 50));
 ```
 
@@ -120,6 +120,6 @@ def load_data_imdb(batch_size, num_steps=500):
 1. Discover a different natural language dataset (such as [Amazon reviews](https://snap.stanford.edu/data/web-Amazon.html)) and build a similar data_loader function as `load_data_imdb`.
 
 
-## [Discussions](https://discuss.mxnet.io/t/4355)
-
-![](../img/qr_sentiment-analysis-and-dataset.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/391)
+:end_tab:

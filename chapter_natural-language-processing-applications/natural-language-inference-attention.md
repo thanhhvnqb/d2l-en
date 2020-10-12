@@ -19,7 +19,7 @@ Similar to alignment of words between source and target sentences in machine tra
 the alignment of words between premises and hypotheses
 can be neatly accomplished by attention mechanisms.
 
-![Natural language inference using attention mechanisms. ](../img/nli_attention.svg)
+![Natural language inference using attention mechanisms. ](../img/nli-attention.svg)
 :label:`fig_nli_attention`
 
 :numref:`fig_nli_attention` depicts the natural language inference method using attention mechanisms.
@@ -50,7 +50,7 @@ For ease of demonstration, :numref:`fig_nli_attention` shows such alignment in a
 
 Now we describe the soft alignment using attention mechanisms in more detail.
 Denote by $\mathbf{A} = (\mathbf{a}_1, \ldots, \mathbf{a}_m)$
-and $\mathbf{B} = (\mathbf{b}_1, \ldots, \mathbf{b}_n)$ the premise and hypothesis, 
+and $\mathbf{B} = (\mathbf{b}_1, \ldots, \mathbf{b}_n)$ the premise and hypothesis,
 whose number of words are $m$ and $n$, respectively,
 where $\mathbf{a}_i, \mathbf{b}_j \in \mathbb{R}^{d}$ ($i = 1, \ldots, m, j = 1, \ldots, n$) is a $d$-dimensional word embedding vector.
 For soft alignment, we compute the attention weights $e_{ij} \in \mathbb{R}$ as
@@ -58,7 +58,7 @@ For soft alignment, we compute the attention weights $e_{ij} \in \mathbb{R}$ as
 $$e_{ij} = f(\mathbf{a}_i)^\top f(\mathbf{b}_j),$$
 :eqlabel:`eq_nli_e`
 
-where the function $f$ is a multilayer perceptron defined in the following `mlp` function.
+where the function $f$ is an MLP defined in the following `mlp` function.
 The output dimension of $f$ is specified by the `num_hiddens` argument of `mlp`.
 
 ```{.python .input  n=2}
@@ -100,38 +100,41 @@ class Attend(nn.Block):
         self.f = mlp(num_hiddens=num_hiddens, flatten=False)
 
     def forward(self, A, B):
-        # Shape of A/B: (batch_size, #words in sequence A/B, embed_size)
-        # Shape of f_A/f_B: (batch_size, #words in sequence A/B, num_hiddens)
+        # Shape of `A`/`B`: (b`atch_size`, no. of words in sequence A/B,
+        # `embed_size`)
+        # Shape of `f_A`/`f_B`: (`batch_size`, no. of words in sequence A/B,
+        # `num_hiddens`)
         f_A = self.f(A)
         f_B = self.f(B)
-        # Shape of e: (batch_size, #words in sequence A, #words in sequence B)
+        # Shape of `e`: (`batch_size`, no. of words in sequence A,
+        # no. of words in sequence B)
         e = npx.batch_dot(f_A, f_B, transpose_b=True)
-        # Shape of beta: (batch_size, #words in sequence A, embed_size), where
-        # sequence B is softly aligned with each word (axis 1 of beta) in
-        # sequence A
+        # Shape of `beta`: (`batch_size`, no. of words in sequence A,
+        # `embed_size`), where sequence B is softly aligned with each word
+        # (axis 1 of `beta`) in sequence A
         beta = npx.batch_dot(npx.softmax(e), B)
-        # Shape of alpha: (batch_size, #words in sequence B, embed_size),
-        # where sequence A is softly aligned with each word (axis 1 of alpha)
-        # in sequence B
+        # Shape of `alpha`: (`batch_size`, no. of words in sequence B,
+        # `embed_size`), where sequence A is softly aligned with each word
+        # (axis 1 of `alpha`) in sequence B
         alpha = npx.batch_dot(npx.softmax(e.transpose(0, 2, 1)), A)
         return beta, alpha
 ```
 
 ### Comparing
 
-In the next step, we compare a word in one sequence with the other sequence that is softly aligned with that word. 
+In the next step, we compare a word in one sequence with the other sequence that is softly aligned with that word.
 Note that in soft alignment, all the words from one sequence, though with probably different attention weights, will be compared with a word in the other sequence.
 For easy of demonstration, :numref:`fig_nli_attention` pairs words with aligned words in a *hard* way.
 For example, suppose that the attending step determines that "need" and "sleep" in the premise are both aligned with "tired" in the hypothesis, the pair "tired--need sleep" will be compared.
 
-In the comparing step, we feed the concatenation (operator $[\cdot, \cdot]$) of words from one sequence and aligned words from the other sequence into a function $g$ (a multilayer perceptron):
+In the comparing step, we feed the concatenation (operator $[\cdot, \cdot]$) of words from one sequence and aligned words from the other sequence into a function $g$ (an MLP):
 
 $$\mathbf{v}_{A,i} = g([\mathbf{a}_i, \boldsymbol{\beta}_i]), i = 1, \ldots, m\\ \mathbf{v}_{B,j} = g([\mathbf{b}_j, \boldsymbol{\alpha}_j]), j = 1, \ldots, n.$$
 
 :eqlabel:`eq_nli_v_ab`
 
 
-In :eqref:`eq_nli_v_ab`, $\mathbf{v}_{A,i}$ is the comparison between word $i$ in the premise and all the hypothesis words that are softly aligned with word $i$; 
+In :eqref:`eq_nli_v_ab`, $\mathbf{v}_{A,i}$ is the comparison between word $i$ in the premise and all the hypothesis words that are softly aligned with word $i$;
 while $\mathbf{v}_{B,j}$ is the comparison between word $j$ in the hypothesis and all the premise words that are softly aligned with word $j$.
 The following `Compare` class defines such as comparing step.
 
@@ -157,7 +160,7 @@ $$
 \mathbf{v}_A = \sum_{i=1}^{m} \mathbf{v}_{A,i}, \quad \mathbf{v}_B = \sum_{j=1}^{n}\mathbf{v}_{B,j}.
 $$
 
-Next we feed the concatenation of both summarization results into function $h$ (a multilayer perceptron) to obtain the classification result of the logical relationship:
+Next we feed the concatenation of both summarization results into function $h$ (an MLP) to obtain the classification result of the logical relationship:
 
 $$
 \hat{\mathbf{y}} = h([\mathbf{v}_A, \mathbf{v}_B]).
@@ -209,7 +212,7 @@ class DecomposableAttention(nn.Block):
 ## Training and Evaluating the Model
 
 Now we will train and evaluate the defined decomposable attention model on the SNLI dataset.
-We begin by reading the dataset. 
+We begin by reading the dataset.
 
 
 ### Reading the dataset
@@ -230,9 +233,9 @@ Then we create a model instance, initialize its parameters,
 and load the GloVe embedding to initialize vectors of input tokens.
 
 ```{.python .input  n=8}
-embed_size, num_hiddens, ctx = 100, 200, d2l.try_all_gpus()
+embed_size, num_hiddens, devices = 100, 200, d2l.try_all_gpus()
 net = DecomposableAttention(vocab, embed_size, num_hiddens)
-net.initialize(init.Xavier(), ctx=ctx)
+net.initialize(init.Xavier(), ctx=devices)
 glove_embedding = d2l.TokenEmbedding('glove.6b.100d')
 embeds = glove_embedding[vocab.idx_to_token]
 net.embedding.weight.set_data(embeds)
@@ -245,11 +248,11 @@ we define a `split_batch_multi_inputs` function to take multiple inputs such as 
 
 ```{.python .input  n=10}
 #@save
-def split_batch_multi_inputs(X, y, ctx_list):
-    """Split multi-input X and y into multiple devices specified by ctx"""
+def split_batch_multi_inputs(X, y, devices):
+    """Split multi-input `X` and `y` into multiple devices."""
     X = list(zip(*[gluon.utils.split_and_load(
-        feature, ctx_list, even_split=False) for feature in X]))
-    return (X, gluon.utils.split_and_load(y, ctx_list, even_split=False))
+        feature, devices, even_split=False) for feature in X]))
+    return (X, gluon.utils.split_and_load(y, devices, even_split=False))
 ```
 
 Now we can train and evaluate the model on the SNLI dataset.
@@ -258,7 +261,7 @@ Now we can train and evaluate the model on the SNLI dataset.
 lr, num_epochs = 0.001, 4
 trainer = gluon.Trainer(net.collect_params(), 'adam', {'learning_rate': lr})
 loss = gluon.loss.SoftmaxCrossEntropyLoss()
-d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, ctx,
+d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices,
                split_batch_multi_inputs)
 ```
 
@@ -298,6 +301,6 @@ predict_snli(net, vocab, ['he', 'is', 'good', '.'], ['he', 'is', 'bad', '.'])
 1. Suppose that we want to get the level of semantical similarity (e.g., a continuous value between $0$ and $1$) for any pair of sentences. How shall we collect and label the dataset? Can you design a model with attention mechanisms?
 
 
-## [Discussions](https://discuss.mxnet.io/t/5518)
-
-![](../img/qr_natural-language-inference-attention.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/395)
+:end_tab:

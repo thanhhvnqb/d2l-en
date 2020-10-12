@@ -19,7 +19,7 @@ we'd have to step through every possible corner case
 that we anticipate encountering, devising appropriate rules.
 Each time a customer clicks to add an item to their shopping cart,
 we add an entry to the shopping cart database table,
-associating that user's ID with the requested product’s ID.
+associating that user's ID with the requested product's ID.
 While few developers ever get it completely right the first time
 (it might take some test runs to work out the kinks),
 for the most part, we could write such a program from first principles
@@ -242,8 +242,7 @@ It might go without saying that you cannot do data science without data.
 We could lose hundreds of pages pondering what precisely constitutes data,
 but for now, we will err on the practical side
 and focus on the key properties to be concerned with.
-Generally, we are concerned with a collection of *examples*
-(also called *data points*, *samples*, or *instances*).
+Generally, we are concerned with a collection of *examples*.
 In order to work with data usefully, we typically
 need to come up with a suitable numerical representation.
 Each *example* typically consists of a collection
@@ -546,7 +545,7 @@ our outputs and targets as real-valued numbers.
 
 
 We denote any individual target $y_i$
-(corresponding to example $\mathbf{x}i$)
+(corresponding to example $\mathbf{x}_i$)
 and the set of all targets $\mathbf{y}$
 (corresponding to all examples $X$).
 When our targets take on arbitrary values in some range,
@@ -579,16 +578,16 @@ you have probably worked through a regression problem informally.
 Imagine, for example, that you had your drains repaired
 and that your contractor spent $x_1=3$ hours
 removing gunk from your sewage pipes.
-Then she sent you a bill of $y_1 = \$350$.
+Then he sent you a bill of $y_1 = \$350$.
 Now imagine that your friend hired the same contractor for $x_2 = 2$ hours
-and that she received a bill of $y_2 = \$250$.
+and that he received a bill of $y_2 = \$250$.
 If someone then asked you how much to expect
 on their upcoming gunk-removal invoice
 you might make some reasonable assumptions,
 such as more hours worked costs more dollars.
 You might also assume that there is some base charge
 and that the contractor then charges per hour.
-If these assumptions held true, then given these two data points,
+If these assumptions held true, then given these two data examples,
 you could already identify the contractor's pricing structure:
 \$100 per hour plus \$50 to show up at your house.
 If you followed that much then you already understand
@@ -608,7 +607,7 @@ where
 $$l(y, y') = \sum_i |y_i-y_i'|$$
 
 and the least mean squares loss, or
-L2 loss
+$L_2$ loss
 where
 
 $$l(y, y') = \sum_i (y_i - y_i')^2.$$
@@ -674,7 +673,7 @@ we call the problem *multiclass classification*.
 Common examples include hand-written character recognition
 `[0, 1, 2, 3 ... 9, a, b, c, ...]`.
 While we attacked regression problems by trying
-to minimize the L1 or L2 loss functions,
+to minimize the $L_1$ or $L_2$ loss functions,
 the common loss function for classification problems is called cross-entropy.
 
 Note that the most likely class is not necessarily
@@ -682,7 +681,7 @@ the one that you are going to use for your decision.
 Assume that you find this beautiful mushroom in your backyard
 as shown in :numref:`fig_death_cap`.
 
-![Death cap---do not eat!](../img/death_cap.jpg)
+![Death cap---do not eat!](../img/death-cap.jpg)
 :width:`200px`
 :label:`fig_death_cap`
 
@@ -692,7 +691,7 @@ Say our poison-detection classifier outputs
 $P(y=\mathrm{death cap}|\mathrm{image}) = 0.2$.
 In other words, the classifier is $80\%$ sure
 that our mushroom *is not* a death cap.
-Still, you'd have to be a fool to eat it.
+Still, you would have to be a fool to eat it.
 That is because the certain benefit of a delicious dinner
 is not worth a $20\%$ risk of dying from it.
 In other words, the effect of the *uncertain risk*
@@ -852,7 +851,7 @@ detailed user activity and item characteristics into account
 when computing such scores. :numref:`fig_deeplearning_amazon` is an example
 of deep learning books recommended by Amazon based on personalization algorithms tuned to capture the author's preferences.
 
-![Deep learning books recommended by Amazon.](../img/deeplearning_amazon.png)
+![Deep learning books recommended by Amazon.](../img/deeplearning-amazon.jpg)
 :label:`fig_deeplearning_amazon`
 
 Despite their tremendous economic value, recommendation systems
@@ -954,7 +953,7 @@ inputs and outputs occur in the same order (after alignment),
 in machine translation, order inversion can be vital.
 In other words, while we are still converting one sequence into another,
 neither the number of inputs and outputs nor the order
-of corresponding data points are assumed to be the same.
+of corresponding data examples are assumed to be the same.
 Consider the following illustrative example
 of the peculiar tendency of Germans
 to place the verbs at the end of sentences.
@@ -981,7 +980,7 @@ All the examples so far were related to *Supervised Learning*,
 i.e., situations where we feed the model a giant dataset
 containing both the features and corresponding target values.
 You could think of the supervised learner as having
-an extremely specialized job and an extremely anal boss.
+an extremely specialized job and an extremely banal boss.
 The boss stands over your shoulder and tells you exactly what to do
 in every situation until you learn to map from situations to actions.
 Working for such a boss sounds pretty lame.
@@ -1086,7 +1085,7 @@ This last question raises the problem of *distribution shift*,
 (when training and test data are different).
 It is a problem that most of us have experienced
 when taking exams written by a lecturer,
-while the homeworks were composed by her TAs.
+while the homeworks were composed by his TAs.
 We will briefly describe reinforcement learning and adversarial learning,
 two settings that explicitly consider interaction with an environment.
 
@@ -1105,8 +1104,8 @@ The breakthrough [deep Q-network that beat humans at Atari games using only the 
 and the [AlphaGo program that dethroned the world champion at the board game Go](https://www.wired.com/2017/05/googles-alphago-trounces-humans-also-gives-boost/) are two prominent examples.
 
 Reinforcement learning gives a very general statement of a problem,
-in which an agent interacts with an environment over a series of *timesteps*.
-At each timestep $t$, the agent receives some observation $o_t$
+in which an agent interacts with an environment over a series of *time steps*.
+At each time step $t$, the agent receives some observation $o_t$
 from the environment and must choose an action $a_t$
 that is subsequently transmitted back to the environment
 via some mechanism (sometimes called an actuator).
@@ -1300,7 +1299,7 @@ Suddenly algorithms and models that seemed computationally infeasible
 became relevant (and vice versa).
 This is best illustrated in :numref:`tab_intro_decade`.
 
-:Dataset versus computer memory and computational power
+:Dataset vs. computer memory and computational power
 
 |Decade|Dataset|Memory|Floating Point Calculations per Second|
 |:--|:-|:-|:-|
@@ -1548,6 +1547,6 @@ than the potential of malevolent superintelligence to destroy humanity.
 1. Which parts of code that you are currently writing could be "learned", i.e., improved by learning and automatically determining design choices that are made in your code? Does your code include heuristic design choices?
 1. Which problems that you encounter have many examples for how to solve them, yet no specific way to automate them? These may be prime candidates for using deep learning.
 1. Viewing the development of artificial intelligence as a new industrial revolution, what is the relationship between algorithms and data? Is it similar to steam engines and coal (what is the fundamental difference)?
-1. Where else can you apply the end-to-end training approach? Physics? Engineering? Econometrics?
+1. Where else can you apply the end-to-end training approach (such as in :numref:`fig_ml_loop`)? Physics? Engineering? Econometrics?
 
 [Discussions](https://discuss.d2l.ai/t/22)

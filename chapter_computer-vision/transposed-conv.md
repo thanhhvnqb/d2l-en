@@ -16,7 +16,7 @@ npx.set_np()
 
 Let us consider a basic case that both input and output channels are 1, with 0 padding and 1 stride. :numref:`fig_trans_conv` illustrates how transposed convolution with a $2\times 2$ kernel is computed on the $2\times 2$ input matrix.
 
-![Transposed convolution layer with a $2\times 2$ kernel.](../img/trans_conv.svg)
+![Transposed convolution layer with a $2\times 2$ kernel.](../img/trans-conv.svg)
 :label:`fig_trans_conv`
 
 We can implement this operation by giving matrix kernel $K$ and matrix input $X$.
@@ -71,7 +71,7 @@ tconv(X)
 The multi-channel extension of the transposed convolution is the same as the convolution. When the input has multiple channels, denoted by $c_i$, the transposed convolution assigns a $k_h\times k_w$ kernel matrix to each input channel. If the output has a channel size $c_o$, then we have a $c_i\times k_h\times k_w$ kernel for each output channel.
 
 
-As a result, if we feed $X$ into a convolutional layer $f$ to compute $Y=f(X)$ and create a transposed convolution layer $g$ with the same hyper-parameters as $f$ except for the output channel set to be the channel size of $X$, then $g(Y)$ should has the same shape as $X$. Let us verify this statement.
+As a result, if we feed $X$ into a convolutional layer $f$ to compute $Y=f(X)$ and create a transposed convolution layer $g$ with the same hyperparameters as $f$ except for the output channel set to be the channel size of $X$, then $g(Y)$ should has the same shape as $X$. Let us verify this statement.
 
 ```{.python .input}
 X = np.random.uniform(size=(1, 10, 16, 16))
@@ -84,7 +84,7 @@ tconv(conv(X)).shape == X.shape
 
 ## Analogy to Matrix Transposition
 
-The transposed convolution takes its name from the matrix transposition. In fact, convolution operations can also be achieved by matrix multiplication. In the example below, we define a $3\times$ input $X$ with a $2\times 2$ kernel $K$, and then use `corr2d` to compute the convolution output.
+The transposed convolution takes its name from the matrix transposition. In fact, convolution operations can also be achieved by matrix multiplication. In the example below, we define a $3\times 3$ input $X$ with a $2\times 2$ kernel $K$, and then use `corr2d` to compute the convolution output.
 
 ```{.python .input}
 X = np.arange(9).reshape(3, 3)
@@ -130,6 +130,6 @@ Y == np.dot(W.T, X.reshape(-1)).reshape(3, 3)
 
 1. Is it efficient to use matrix multiplication to implement convolution operations? Why?
 
-## [Discussions](https://discuss.mxnet.io/t/transposed-convolution/4366)
-
-![](../img/qr_transposed-conv.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/376)
+:end_tab:

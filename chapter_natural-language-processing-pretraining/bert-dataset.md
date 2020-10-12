@@ -17,7 +17,7 @@ To facilitate the demonstration of BERT pretraining,
 we use a smaller corpus WikiText-2 :cite:`Merity.Xiong.Bradbury.ea.2016`.
 
 Comparing with the PTB dataset used for pretraining word2vec in :numref:`sec_word2vec_data`,
-WikiText-2 i) retains the original punctuation, making it suitable for next sentence prediction; ii) retrains the original case and numbers; iii) is over twice larger.
+WikiText-2 i) retains the original punctuation, making it suitable for next sentence prediction; ii) retains the original case and numbers; iii) is over twice larger.
 
 ```{.python .input  n=1}
 import collections
@@ -65,11 +65,11 @@ we begin by implementing helper functions for the two BERT pretraining tasks:
 next sentence prediction and masked language modeling.
 These helper functions will be invoked later
 when transforming the raw text corpus
-into the the dataset of the ideal format to pretrain BERT.
+into the dataset of the ideal format to pretrain BERT.
 
 ### Generating the Next Sentence Prediction Task
 
-According to descriptions of :label:`subsec_nsp`,
+According to descriptions of :numref:`subsec_nsp`,
 the `_get_next_sentence` function generates a training example
 for the binary classification task.
 
@@ -79,7 +79,7 @@ def _get_next_sentence(sentence, next_sentence, paragraphs):
     if random.random() < 0.5:
         is_next = True
     else:
-        # paragraphs is a list of lists of lists
+        # `paragraphs` is a list of lists of lists
         next_sentence = random.choice(random.choice(paragraphs))
         is_next = False
     return sentence, next_sentence, is_next
@@ -237,8 +237,8 @@ Infrequent tokens that appear less than five times are filtered out.
 #@save
 class _WikiTextDataset(gluon.data.Dataset):
     def __init__(self, paragraphs, max_len):
-        # Input paragraphs[i] is a list of sentence strings representing a
-        # paragraph; while output paragraphs[i] is a list of sentences
+        # Input `paragraphs[i]` is a list of sentence strings representing a
+        # paragraph; while output `paragraphs[i]` is a list of sentences
         # representing a paragraph, where each sentence is a list of tokens
         paragraphs = [d2l.tokenize(
             paragraph, token='word') for paragraph in paragraphs]
@@ -324,6 +324,6 @@ len(vocab)
 1. What is the vocabulary size if we do not filter out any infrequent token?
 
 
-## [Discussions](https://discuss.mxnet.io/t/5868)
-
-![](../img/qr_bert-dataset.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/389)
+:end_tab:

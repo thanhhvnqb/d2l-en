@@ -71,7 +71,7 @@ def show_bboxes(axes, bboxes, labels=None, colors=None):
 As we just saw, the coordinate values of the $x$ and $y$ axis in the variable `boxes` have been divided by the width and height of the image, respectively. When drawing images, we need to restore the original coordinate values of the anchor boxes and therefore define the variable `bbox_scale`. Now, we can draw all the anchor boxes centered on (250, 250) in the image. As you can see, the blue anchor box with a size of 0.75 and an aspect ratio of 1 covers the dog in the image well.
 
 ```{.python .input  n=7}
-d2l.set_figsize((3.5, 2.5))
+d2l.set_figsize()
 bbox_scale = np.array((w, h, w, h))
 fig = d2l.plt.imshow(img)
 show_bboxes(fig.axes, boxes[250, 250, :, :] * bbox_scale,
@@ -234,11 +234,11 @@ In practice, we can remove prediction bounding boxes with lower confidence level
 ## Exercises
 
 1. Change the `sizes` and `ratios` values in the `multibox_prior` function and observe the changes to the generated anchor boxes.
-1. Construct two bounding boxes with and IoU of 0.5, and observe their coincidence.
+1. Construct two bounding boxes with an IoU of 0.5, and observe their coincidence.
 1. Verify the output of offset `labels[0]` by marking the anchor box offsets as defined in this section (the constant is the default value).
 1. Modify the variable `anchors` in the "Labeling Training Set Anchor Boxes" and "Output Bounding Boxes for Prediction" sections. How do the results change?
 
 
-## [Discussions](https://discuss.mxnet.io/t/2445)
-
-![](../img/qr_anchor.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/370)
+:end_tab:

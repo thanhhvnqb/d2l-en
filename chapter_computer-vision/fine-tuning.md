@@ -123,13 +123,14 @@ def train_fine_tuning(net, learning_rate, batch_size=128, num_epochs=5):
         train_imgs.transform_first(train_augs), batch_size, shuffle=True)
     test_iter = gluon.data.DataLoader(
         test_imgs.transform_first(test_augs), batch_size)
-    ctx = d2l.try_all_gpus()
-    net.collect_params().reset_ctx(ctx)
+    devices = d2l.try_all_gpus()
+    net.collect_params().reset_ctx(devices)
     net.hybridize()
     loss = gluon.loss.SoftmaxCrossEntropyLoss()
     trainer = gluon.Trainer(net.collect_params(), 'sgd', {
         'learning_rate': learning_rate, 'wd': 0.001})
-    d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, ctx)
+    d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs,
+                   devices)
 ```
 
 We set the learning rate in the `Trainer` instance to a smaller value, such as 0.01, in order to fine-tune the model parameters obtained in pretraining. Based on the previous settings, we will train the output layer parameters of the target model from scratch using a learning rate ten times greater.
@@ -160,7 +161,7 @@ As you can see, the fine-tuned model tends to achieve higher precision in the sa
 ## Exercises
 
 1. Keep increasing the learning rate of `finetune_net`. How does the precision of the model change?
-2. Further tune the hyper-parameters of `finetune_net` and `scratch_net` in the comparative experiment. Do they still have different precisions?
+2. Further tune the hyperparameters of `finetune_net` and `scratch_net` in the comparative experiment. Do they still have different precisions?
 3. Set the parameters in `finetune_net.features` to the parameters of the source model and do not update them during training. What will happen? You can use the following code.
 
 ```{.python .input}
@@ -175,6 +176,6 @@ hotdog_w = np.split(weight.data(), 1000, axis=0)[713]
 hotdog_w.shape
 ```
 
-## [Discussions](https://discuss.mxnet.io/t/2443)
-
-![](../img/qr_fine-tuning.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/368)
+:end_tab:

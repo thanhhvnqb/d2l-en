@@ -56,17 +56,18 @@ We implement the following `load_pretrained_model` function to load pretrained B
 
 ```{.python .input  n=3}
 def load_pretrained_model(pretrained_model, num_hiddens, ffn_num_hiddens,
-                          num_heads, num_layers, dropout, max_len, ctx):
+                          num_heads, num_layers, dropout, max_len, devices):
     data_dir = d2l.download_extract(pretrained_model)
     # Define an empty vocabulary to load the predefined vocabulary
-    vocab = d2l.Vocab([])
+    vocab = d2l.Vocab()
     vocab.idx_to_token = json.load(open(os.path.join(data_dir, 'vocab.json')))
     vocab.token_to_idx = {token: idx for idx, token in enumerate(
         vocab.idx_to_token)}
     bert = d2l.BERTModel(len(vocab), num_hiddens, ffn_num_hiddens, num_heads, 
                          num_layers, dropout, max_len)
     # Load pretrained BERT parameters
-    bert.load_parameters(os.path.join(data_dir, 'pretrained.params'), ctx=ctx)
+    bert.load_parameters(os.path.join(data_dir, 'pretrained.params'),
+                         ctx=devices)
     return bert, vocab
 ```
 
@@ -75,10 +76,10 @@ we will load and fine-tune the small version ("bert.small") of the pretrained BE
 In the exercise, we will show how to fine-tune the much larger "bert.base" to significantly improve the testing accuracy.
 
 ```{.python .input  n=4}
-ctx = d2l.try_all_gpus()
+devices = d2l.try_all_gpus()
 bert, vocab = load_pretrained_model(
     'bert.small', num_hiddens=256, ffn_num_hiddens=512, num_heads=4,
-    num_layers=2, dropout=0.1, max_len=512, ctx=ctx)
+    num_layers=2, dropout=0.1, max_len=512, devices=devices)
 ```
 
 ## The Dataset for Fine-Tuning BERT
@@ -200,11 +201,11 @@ the pretrained BERT model `bert` is fed into the `BERTClassifier` instance `net`
 the downstream application.
 In common implementations of BERT fine-tuning,
 only the parameters of the output layer of the additional MLP (`net.output`) will be learned from scratch.
-All the parameters of the pretrained BERT encoder (`net.encoder`) and the hidden layer of the additional MLP (net.hidden) will be fine-tuned.
+All the parameters of the pretrained BERT encoder (`net.encoder`) and the hidden layer of the additional MLP (`net.hidden`) will be fine-tuned.
 
 ```{.python .input  n=8}
 net = BERTClassifier(bert)
-net.output.initialize(ctx=ctx)
+net.output.initialize(ctx=devices)
 ```
 
 Recall that
@@ -232,7 +233,7 @@ can be further improved: we leave its discussions in the exercises.
 lr, num_epochs = 1e-4, 5
 trainer = gluon.Trainer(net.collect_params(), 'adam', {'learning_rate': lr})
 loss = gluon.loss.SoftmaxCrossEntropyLoss()
-d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, ctx,
+d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices,
                d2l.split_batch_multi_inputs)
 ```
 
@@ -248,6 +249,6 @@ d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, ctx,
 1. How to truncate a pair of sequences according to their ratio of length? Compare this pair truncation method and the one used in the `SNLIBERTDataset` class. What are their pros and cons?
 
 
-## [Discussions](https://discuss.mxnet.io/t/5870)
-
-![](../img/qr_natural-language-inference-bert.svg)
+:begin_tab:`mxnet`
+[Discussions](https://discuss.d2l.ai/t/397)
+:end_tab:
